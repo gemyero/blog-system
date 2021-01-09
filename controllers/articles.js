@@ -21,11 +21,15 @@ const articles = {
 
     const { limit, offset } = formatPaginationParamaters(perPage, page);
 
-    const findAllQuery = {
+    const baseQuery = {
       ...(term && {
         where: Sequelize.literal('MATCH (title,body) AGAINST (:term IN NATURAL LANGUAGE MODE)'),
         replacements: { term },
       }),
+    };
+
+    const findAllQuery = {
+      ...baseQuery,
       offset,
       limit,
       ...((sortedByThumbs === 'true') && {
@@ -36,7 +40,7 @@ const articles = {
     };
 
     const instances = await Article.findAll(findAllQuery);
-    const { count: total } = await Article.findAndCountAll({});
+    const { count: total } = await Article.findAndCountAll(baseQuery);
     return {
       articles: instances,
       total,
