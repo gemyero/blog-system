@@ -1,7 +1,7 @@
 {
   "name": "blog-system",
   "version": "1.0.0",
-  "description": "",
+  "description": "A blog system where you can manage authors, articles and comments.",
   "main": "server.js",
   "scripts": {
     "start": "node .",

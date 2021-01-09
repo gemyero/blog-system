@@ -51,14 +51,30 @@ const articles = {
     });
     return comment;
   },
-  async getArticleComments(articleId) {
+  async getArticleComments(articleId, query) {
+    const {
+      perPage, page,
+    } = query;
+    const { limit, offset } = formatPaginationParamaters(perPage, page);
+
     await articlesValidation.validateArticlePrimaryKey(articleId);
-    const comments = await Comment.findAll({
+
+    const { count: total } = await Comment.findAndCountAll({
       where: {
         ArticleId: articleId,
       },
     });
-    return comments;
+    const comments = await Comment.findAll({
+      offset,
+      limit,
+      where: {
+        ArticleId: articleId,
+      },
+    });
+    return {
+      comments,
+      total,
+    };
   },
   async incrementThumbUps(articleId) {
     await articlesValidation.validateArticlePrimaryKey(articleId);
