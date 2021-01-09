@@ -22,7 +22,10 @@ const options = {
     { name: 'Articles' },
     { name: 'Authors' },
   ],
-  apis: ['./routes/articles.js'],
+  apis: [
+    './routes/articles.js',
+    './routes/authors.js',
+  ],
 };
 
 const specs = swaggerJsdoc(options);
