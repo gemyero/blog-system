@@ -4,7 +4,7 @@ const { sequelize } = require('./boot/sequelize');
 const config = require('./config');
 const appRouter = require('./routes');
 
-const { port, host } = config;
+const { port, host, appUrl } = config;
 
 const app = express();
 
@@ -23,5 +23,7 @@ app.use((error, req, res, next) => {
 (async () => {
   await sequelize.sync();
   console.log('Connected to MySQL...');
-  app.listen(port, host);
+  app.listen(port, host, () => {
+    console.log(`App url: ${appUrl}`);
+  });
 })();

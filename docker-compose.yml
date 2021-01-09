@@ -6,6 +6,7 @@ services:
     ports:
       - 3000:3000
     environment:
+      - APP_URL=http://localhost:3000/
       - MYSQL_URL=mysql://user:TB5e8EuFSxEpUFES@database:3306/blog
     command: sh -c 'until nc -z -w 2 database 3306 && echo database ok && node .; do sleep 2; done'
   
