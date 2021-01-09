@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  application:
+    build: '.'
+    ports:
+      - 3000:3000
+    environment:
+      - MYSQL_URL=mysql://user:TB5e8EuFSxEpUFES@database:3306/blog
+    command: sh -c 'until nc -z -w 2 database 3306 && echo database ok && node .; do sleep 2; done'
+  
+  database:
+    image: mysql:5.7.10
+    environment:
+      - MYSQL_ROOT_PASSWORD=YmW4TG96RnutHRba
+      - MYSQL_DATABASE=blog
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=TB5e8EuFSxEpUFES
+    volumes:
+      - blog-data:/var/lib/mysql
+
+volumes:
+  blog-data:
