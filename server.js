@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const { sequelize } = require('./boot/sequelize');
 const config = require('./config');
 const appRouter = require('./routes');
@@ -7,8 +8,8 @@ const { port, host } = config;
 
 const app = express();
 
+app.use(helmet());
 app.use(express.json());
-
 app.use('/api', appRouter);
 
 app.use((error, req, res, next) => {
