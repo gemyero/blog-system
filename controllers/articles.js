@@ -1,5 +1,7 @@
+const { Sequelize } = require('sequelize');
 const { Article, Comment } = require('../models');
 const { articlesValidation, commentsValidation } = require('../helpers/validations');
+const { formatPaginationParamaters } = require('../helpers/pagination');
 
 const articles = {
   async addNewArticle(article) {
@@ -12,15 +14,33 @@ const articles = {
     const instance = await Article.findByPk(id);
     return instance;
   },
-  async getAllArticles(sortedByThumbs = false) {
-    const instances = await Article.findAll({
-      ...(sortedByThumbs && {
+  async getAllArticles(query) {
+    const {
+      perPage, page, sortedByThumbs, term,
+    } = query;
+
+    const { limit, offset } = formatPaginationParamaters(perPage, page);
+
+    const findAllQuery = {
+      ...(term && {
+        where: Sequelize.literal('MATCH (title,body) AGAINST (:term IN NATURAL LANGUAGE MODE)'),
+        replacements: { term },
+      }),
+      offset,
+      limit,
+      ...((sortedByThumbs === 'true') && {
         order: [
           ['thumbsUp', 'DESC'],
         ],
       }),
-    });
-    return instances;
+    };
+
+    const instances = await Article.findAll(findAllQuery);
+    const { count: total } = await Article.findAndCountAll({});
+    return {
+      articles: instances,
+      total,
+    };
   },
   async addNewCommentToArticle(articleId, commentData) {
     await articlesValidation.validateArticlePrimaryKey(articleId);

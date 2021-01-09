@@ -14,6 +14,13 @@ const Article = sequelize.define('Article', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+}, {
+  indexes: [
+    {
+      type: 'FULLTEXT',
+      fields: ['title', 'body'],
+    },
+  ],
 });
 
 module.exports = Article;

@@ -4,9 +4,8 @@ const { articlesController } = require('../controllers');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  // sortedByThumbs should be true of false any other value is counted as false
-  const { query: { sortedByThumbs } } = req;
-  const articles = await articlesController.getAllArticles(sortedByThumbs === 'true');
+  const { query } = req;
+  const articles = await articlesController.getAllArticles(query);
   res.send(articles);
 });
 

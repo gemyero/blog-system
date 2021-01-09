@@ -4,7 +4,8 @@ const { authorsController } = require('../controllers');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const authors = await authorsController.getAllAuthors();
+  const { query } = req;
+  const authors = await authorsController.getAllAuthors(query);
   res.send(authors);
 });
 
