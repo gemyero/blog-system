@@ -6,7 +6,8 @@ const urlJoin = require('url-join');
 const app = require('../../server');
 const { sequelize } = require('../../boot/sequelize');
 const authorsData = require('../data/authors');
-const { Author } = require('../../models');
+const articlesData = require('../data/articles');
+const { Author, Article } = require('../../models');
 
 test.before(async (t) => {
   const server = http.createServer(app);
@@ -17,8 +18,14 @@ test.before(async (t) => {
   });
 });
 
-test.serial('Create Author', async (t) => {
+test.serial('Get one article', async (t) => {
   t.teardown(async () => {
+    await Article.destroy({
+      where: {
+        id: 1,
+      },
+    });
+
     await Author.destroy({
       where: {
         id: 1,
@@ -26,11 +33,18 @@ test.serial('Create Author', async (t) => {
     });
   });
 
-  await t.context.axiosInstance.post('/authors', {
+  await Author.create({
     id: 1,
     ...authorsData[0],
   });
-  const author = await Author.findByPk(1);
-  t.is(author.name, authorsData[0].name);
-  t.is(author.job, authorsData[0].job);
+
+  await Article.create({
+    id: 1,
+    ...articlesData[0],
+    AuthorId: 1,
+  });
+
+  const { data } = await t.context.axiosInstance.get('/articles/1');
+  t.is(data.id, 1);
+  t.is(data.AuthorId, 1);
 });

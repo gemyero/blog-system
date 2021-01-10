@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "test": "docker-compose -f testing.yml exec -T application npm run test-command",
-    "test-command": "nyc --reporter=text ava --serial --verbose --timeout=60000 tests/**/*.test.js",
+    "test-command": "nyc --reporter=text --reporter=html ava --serial --verbose --timeout=60000 tests/**/*.test.js",
     "pretest": "docker-compose -f testing.yml up --build -d",
     "posttest": "docker-compose -f testing.yml down"
   },

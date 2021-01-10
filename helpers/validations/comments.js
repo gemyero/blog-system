@@ -5,6 +5,7 @@ const CustomError = require('../customError');
 const comments = {
   validateNewComment(comment) {
     const schema = Joi.object({
+      id: Joi.number(),
       body: Joi.string().required(),
     });
 

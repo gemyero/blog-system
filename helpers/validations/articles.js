@@ -6,6 +6,7 @@ const CustomError = require('../customError');
 const articles = {
   async validateNewArticle(article) {
     const schema = Joi.object({
+      id: Joi.number(),
       title: Joi.string().required(),
       body: Joi.string().required(),
       AuthorId: Joi.number().required().external(async (value) => {

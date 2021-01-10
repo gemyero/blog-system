@@ -12,25 +12,25 @@ test.before(async (t) => {
   const server = http.createServer(app);
   const prefixUrl = await listen(server);
   await sequelize.sync();
+  await Author.create(authorsData[0]);
+  await Author.create(authorsData[1]);
   t.context.axiosInstance = axios.create({
     baseURL: urlJoin(prefixUrl, 'api'),
   });
 });
 
-test.serial('Create Author', async (t) => {
-  t.teardown(async () => {
-    await Author.destroy({
-      where: {
-        id: 1,
-      },
-    });
-  });
+test.after.always(async (t) => {
+  await Author.destroy({ where: {} });
+});
 
-  await t.context.axiosInstance.post('/authors', {
-    id: 1,
-    ...authorsData[0],
-  });
-  const author = await Author.findByPk(1);
-  t.is(author.name, authorsData[0].name);
-  t.is(author.job, authorsData[0].job);
+test.serial('List authors', async (t) => {
+  const { data } = await t.context.axiosInstance.get('/authors');
+  t.is(data.authors.length, 2);
+  t.is(data.total, 2);
+});
+
+test.serial('List authors page 2 perPage 1', async (t) => {
+  const { data } = await t.context.axiosInstance.get('/authors', { params: { perPage: 1, page: 1 } });
+  t.is(data.authors.length, 1);
+  t.is(data.total, 2);
 });

@@ -17,7 +17,7 @@ test.before(async (t) => {
   });
 });
 
-test.serial('Create Author', async (t) => {
+test.serial('Get one author', async (t) => {
   t.teardown(async () => {
     await Author.destroy({
       where: {
@@ -25,12 +25,11 @@ test.serial('Create Author', async (t) => {
       },
     });
   });
-
-  await t.context.axiosInstance.post('/authors', {
+  await Author.create({
     id: 1,
     ...authorsData[0],
   });
-  const author = await Author.findByPk(1);
-  t.is(author.name, authorsData[0].name);
-  t.is(author.job, authorsData[0].job);
+
+  const { data } = await t.context.axiosInstance.get('/authors/1');
+  t.is(data.id, 1);
 });
