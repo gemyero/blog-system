@@ -10,4 +10,5 @@ module.exports = {
   host: getEnv('HOST', false) || '0.0.0.0',
   mysqlUrl: getEnv('MYSQL_URL'),
   appUrl: getEnv('APP_URL', false) || 'http://localhost:3000/',
+  nodeEnv: getEnv('NODE_ENV', false) || 'development',
 };

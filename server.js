@@ -5,7 +5,9 @@ const config = require('./config');
 const appRouter = require('./routes');
 const registerApiDocs = require('./boot/api-docs');
 
-const { port, host, appUrl } = config;
+const {
+  port, host, appUrl, nodeEnv,
+} = config;
 
 const app = express();
 
@@ -15,6 +17,7 @@ app.use('/api', appRouter);
 registerApiDocs(app);
 
 app.use((error, req, res, next) => {
+  console.log(error);
   res.status(error.statusCode).send({
     code: error.code,
     message: error.message,
@@ -23,9 +26,13 @@ app.use((error, req, res, next) => {
 });
 
 (async () => {
-  await sequelize.sync();
-  console.log('Connected to MySQL...');
-  app.listen(port, host, () => {
-    console.log(`App url: ${appUrl}`);
-  });
+  if (nodeEnv !== 'test') {
+    await sequelize.sync();
+    console.log('Connected to MySQL...');
+    app.listen(port, host, () => {
+      console.log(`App url: ${appUrl}`);
+    });
+  }
 })();
+
+module.exports = app;

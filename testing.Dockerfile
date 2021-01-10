@@ -4,12 +4,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --production
+RUN npm install
 
 COPY . .
-
-RUN chown -R node:node .
-
-USER node
 
 CMD [ "node", "." ]

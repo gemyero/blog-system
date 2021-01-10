@@ -2,15 +2,16 @@ version: '2.4'
 
 services:
   application:
-    build: '.'
-    ports:
-      - 3000:3000
-    environment:
-      - APP_URL=http://localhost:3000/
-      - MYSQL_URL=mysql://user:TB5e8EuFSxEpUFES@database:3306/blog
+    build:
+      context: '.'
+      dockerfile: testing.Dockerfile
     depends_on:
       database:
         condition: service_healthy
+    environment:
+      - NODE_ENV=test
+      - MYSQL_URL=mysql://user:TB5e8EuFSxEpUFES@database:3306/blog
+    command: sleep 10000
   
   database:
     image: mysql:5.7.10
@@ -25,8 +26,3 @@ services:
       - MYSQL_DATABASE=blog
       - MYSQL_USER=user
       - MYSQL_PASSWORD=TB5e8EuFSxEpUFES
-    volumes:
-      - blog-data:/var/lib/mysql
-
-volumes:
-  blog-data:
